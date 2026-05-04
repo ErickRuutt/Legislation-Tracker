@@ -1,6 +1,8 @@
 import path from 'path';
 import type { NextConfig } from 'next';
 
+const backendUrl = process.env.BACKEND_URL || 'http://localhost:3001';
+
 const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(__dirname, '../'),
   experimental: {
@@ -10,7 +12,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:3001/api/:path*',
+        destination: `${backendUrl}/api/:path*`,
       },
     ];
   },

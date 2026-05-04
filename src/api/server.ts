@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { config } from '../shared/config';
 import { logger } from '../shared/logger';
+import { protectWrites } from './middleware/auth';
 import overviewRoutes from './routes/overview';
 import legislationRoutes from './routes/legislation';
 import contractsRoutes from './routes/contracts';
@@ -23,6 +24,9 @@ export function createServer(): express.Application {
     logger.info(`${req.method} ${req.path}`);
     next();
   });
+
+  // All mutating requests (POST/PUT/PATCH/DELETE) require API key
+  app.use(protectWrites);
 
   // Routes
   app.use('/api/overview', overviewRoutes);
