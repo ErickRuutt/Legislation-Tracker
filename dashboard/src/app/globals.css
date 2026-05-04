@@ -1,0 +1,127 @@
+@import "tailwindcss";
+
+:root {
+  --every-blue: #271dcd;
+  --every-blue-200: #241bbd;
+  --every-blue-300: #2018a8;
+  --every-navy: #010214;
+  --every-white: #ffffff;
+  --every-sand-100: #ede9e1;
+  --every-sand-200: #d8d3cd;
+  --every-sand-300: #ccc7c3;
+  --every-beige-500: #e8cdb3;
+  --every-peri-500: #b6c9e3;
+  --ink-900: #0b0c14;
+  --ink-700: #2a2a3a;
+  --ink-500: #5a5b6d;
+  --surface: #fffaf4;
+  --surface-strong: #ffffff;
+  --ring: rgba(39, 29, 205, 0.25);
+}
+
+@layer base {
+  body {
+    font-family: 'Neue Montreal', var(--font-instrument), 'Space Grotesk', sans-serif;
+    color: var(--ink-900);
+    background:
+      radial-gradient(1200px 800px at -10% -20%, rgba(39, 29, 205, 0.08), transparent 55%),
+      radial-gradient(900px 700px at 110% -10%, rgba(232, 205, 179, 0.22), transparent 60%),
+      linear-gradient(180deg, #f7f1e8 0%, #efe8de 100%);
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-fraunces), 'Ivar Display', serif;
+    color: var(--ink-900);
+  }
+
+  a {
+    color: inherit;
+  }
+}
+
+@layer components {
+  .surface {
+    background: var(--surface);
+    border: 1px solid rgba(1, 2, 20, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 18px 40px rgba(1, 2, 20, 0.08);
+  }
+
+  .surface-flat {
+    background: var(--surface-strong);
+    border: 1px solid rgba(1, 2, 20, 0.08);
+    border-radius: 16px;
+  }
+
+  .chip {
+    border-radius: 999px;
+    border: 1px solid rgba(1, 2, 20, 0.12);
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.15rem 0.65rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+  }
+
+  .btn-primary {
+    background: var(--every-blue);
+    color: white;
+    border-radius: 999px;
+    padding: 0.65rem 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+    box-shadow: 0 12px 22px rgba(39, 29, 205, 0.25);
+  }
+
+  .btn-primary:hover {
+    background: var(--every-blue-200);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    border-radius: 999px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 600;
+    border: 1px solid rgba(1, 2, 20, 0.15);
+    background: transparent;
+    transition: background 150ms ease, border-color 150ms ease;
+  }
+
+  .btn-ghost:hover {
+    background: rgba(1, 2, 20, 0.04);
+    border-color: rgba(1, 2, 20, 0.3);
+  }
+
+  .input {
+    border-radius: 12px;
+    border: 1px solid rgba(1, 2, 20, 0.12);
+    background: #fff;
+    padding: 0.7rem 0.95rem;
+    font-size: 0.9rem;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .input:focus {
+    outline: none;
+    border-color: var(--every-blue);
+    box-shadow: 0 0 0 3px var(--ring);
+  }
+}
+
+@layer utilities {
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-up {
+    animation: fade-up 480ms ease both;
+  }
+}

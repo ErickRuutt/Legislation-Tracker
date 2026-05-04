@@ -1,0 +1,44 @@
+{
+  "name": "pfas-monitor",
+  "version": "1.0.0",
+  "description": "PFAS & Environmental Monitoring Intelligence Platform",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "migrate": "tsx src/db/migrate.ts",
+    "seed": "tsx scripts/seed.ts",
+    "ingest:pdf": "tsx scripts/ingest-pdf.ts",
+    "embed:doc": "tsx scripts/embed-doc.ts",
+    "summarize:doc": "tsx scripts/summarize-doc.ts",
+    "ask": "tsx scripts/ask.ts",
+    "status:update": "tsx scripts/update-project-status.ts"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.7.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "multer": "^2.0.2",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.16",
+    "openai": "^6.19.0",
+    "@extractus/article-extractor": "^8.0.8",
+    "pdf-parse": "^1.1.1",
+    "rss-parser": "^3.13.0",
+    "tsx": "^4.19.2",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^22.10.5",
+    "@types/node-cron": "^3.0.11",
+    "@types/nodemailer": "^6.4.17",
+    "@types/pdf-parse": "^1.1.5",
+    "typescript": "^5.7.3"
+  }
+}
