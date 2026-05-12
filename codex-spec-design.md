@@ -4,9 +4,75 @@
 
 META
 id: codex_spec_design_log
-project: pfas-monitor
+project: legislation-tracker
 owner: codex
-last_updated: 2026-02-12
+last_updated: 2026-05-11
+
+=== ENTRY ===
+entry_id: 2026-05-11-001
+entry_type: architectural_pivot
+summary: Refactored single-topic PFAS Monitor into multi-topic environmental intelligence platform
+changes:
+- Added topics table with keywords_json + category_weights_json (replaces hardcoded PFAS_KEYWORDS)
+- Added topic_items junction table linking articles/legislation/contracts/social_posts to topics
+- Added government_level + jurisdiction columns to legislation (backfilled: congress=federal/US, wa_legislature=state/WA, or_legislature=state/OR)
+- Added corporate_actors + actor_mentions tables (stubs, not wired)
+- Added content_queue + published_content tables (stubs, not wired)
+- Created src/analysis/topic-matcher.ts: DB-aware, cached, returns per-topic scores for any text
+- Updated BaseCollector.insertTopicItems(): runs after every new item insert across all 5 collectors
+- Created /api/topics CRUD route with cache invalidation
+- Added topicId filter to articles, legislation, contracts, social routes
+- Added governmentLevel + jurisdiction filters to legislation route
+- Seeded 3 topics: PFAS, Roundup/Glyphosate, Environmental Chemicals
+- Backfill migration: existing items assigned to PFAS topic (id=1)
+why:
+- User wants to track multiple environmental chemical topics (PFAS, Roundup, others)
+- User wants a public-facing website showing trends across local/state/federal government
+- User wants corporate actor pattern detection (same corp in multiple jurisdictions)
+- User wants human-approved content queue for advocacy publishing
+decisions:
+- Topics as data model, not config: keyword sets live in DB, editable via API, cached in memory
+- Junction table over topic_id columns: one item can belong to multiple topics
+- government_level derived from source on backfill, set explicitly on new inserts going forward
+- corporate_actors/content_queue added as stubs now to avoid future migration pain
+risks:
+- topic_items backfill assigns all existing data to PFAS only — Roundup/Env Chem items will only appear after recollection
+- NewsAPI QUERIES and KNOWN_BILLS in collectors still PFAS-focused — need to add Roundup queries in Phase 2
+
+=== ENTRY ===
+entry_id: 2026-05-11-002
+entry_type: bugfix
+summary: Fixed 3 pre-existing TypeScript errors (codebase now compiles clean)
+changes:
+- digests.ts L72+L79: rows → rowsWithContent (variable name typo)
+- api/routes/research.ts L79: Request → Request<{jobId:string}> (untyped params)
+- research/generate.ts: rerankChunksWithLLM made generic <T extends {...}> so return type matches SearchResult[]
+why:
+- tsc --noEmit was failing on 4 errors, all pre-existing before this session
+
+=== ENTRY ===
+entry_id: 2026-05-11-003
+entry_type: deployment
+summary: Prepared for Railway (backend) + Vercel (dashboard) deployment
+changes:
+- Added railway.toml: buildCommand = npm ci && npm run build, startCommand = npm start
+- Added src/api/middleware/auth.ts: protectWrites middleware — GET routes public, POST/PUT/PATCH/DELETE require X-API-Key header
+- Applied protectWrites globally in server.ts before all routes
+- Updated dashboard/next.config.ts: BACKEND_URL env var replaces hardcoded localhost:3001
+- Updated .gitignore: added data/*.db-wal + data/*.db-shm + data/research_pdfs/
+- Created .env.example documenting all required env vars
+- Initialized git repo, pushed to https://github.com/ErickRuutt/Legislation-Tracker
+why:
+- User wants hosted deployment; Railway chosen for persistent server (required for cron jobs + worker processes)
+- SQLite kept over Postgres migration to ship faster; can migrate later
+- API_KEY auth gates write routes before going public
+decisions:
+- Stay on SQLite: ship today vs 1-2 days migration; can revisit when scale demands it
+- protectWrites at server level (not per-route) so all future routes inherit auth automatically
+- API_KEY unset in local dev = all routes open (convenience)
+next:
+- User completes Railway setup: new project, persistent volume at /app/data, env vars
+- User completes Vercel setup: root dir = dashboard, BACKEND_URL = Railway URL
 
 === ENTRY ===
 entry_id: 2026-02-12-001
